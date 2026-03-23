@@ -291,7 +291,8 @@ bash scripts/list_learnings.sh
 
 ## 致谢
 
-灵感来源于 [gyc567/open-reflect](https://github.com/gyc567/open-reflect)。
+- 基于 EvoMap 方案2 设计方法论
+- 灵感来源于 [gyc567/open-reflect](https://github.com/gyc567/open-reflect)
 
 ## 许可证
 

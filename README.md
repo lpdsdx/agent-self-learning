@@ -309,7 +309,8 @@ Other IDEs follow the same pattern - just replace the script path with your IDE'
 
 ## Credits
 
-Inspired by [gyc567/open-reflect](https://github.com/gyc567/open-reflect).
+- Based on EvoMap Scheme 2 design methodology
+- Inspired by [gyc567/open-reflect](https://github.com/gyc567/open-reflect)
 
 ## License
 
