@@ -266,7 +266,9 @@ bash scripts/list_learnings.sh
 | Cline | `.clinerules/*.md` | `~/Documents/Cline/Rules/` |
 | Roo Code | `.roo/rules/*.md` | `~/.roo/rules/` |
 
-### 示例: Claude Code (`CLAUDE.md`)
+### 配置示例 (Claude Code `CLAUDE.md`)
+
+其他 IDE 同理，只需将脚本路径替换为上表中对应 IDE 的安装路径即可。
 
 ```markdown
 ## Self-Learning
@@ -278,48 +280,6 @@ bash scripts/list_learnings.sh
   - "记住"、"以后"、"下次" -> remember (high, 0.80)
   - "成功"、"有效"、"解决了" -> success_pattern (high, 0.80)
   - "喜欢"、"习惯"、"倾向" -> preference (high, 0.75)
-```
-
-### 示例: Codex CLI (`AGENTS.md`)
-
-```markdown
-## Self-Learning
-
-- 会话开始时: 执行 `bash ~/.codex/skills/agent-self-learning/scripts/list_learnings.sh` 加载历史知识
-- 会话结束时: 扫描学习信号并通过 `bash ~/.codex/skills/agent-self-learning/scripts/add_learning.sh` 记录
-- 当用户纠正你或分享成功方案时，立即捕获
-```
-
-### 示例: Gemini CLI (`GEMINI.md`)
-
-```markdown
-## Self-Learning
-
-- 会话开始时: 执行 `bash ~/.gemini/antigravity/skills/agent-self-learning/scripts/list_learnings.sh` 加载历史知识
-- 会话结束时: 扫描学习信号并通过 `bash ~/.gemini/antigravity/skills/agent-self-learning/scripts/add_learning.sh` 记录
-- 当用户纠正你或分享成功方案时，立即捕获
-```
-
-### 示例: Cursor (`.cursor/rules/self-learning.mdc`)
-
-```yaml
----
-description: AI agent self-learning system
-alwaysApply: true
----
-- 会话开始时: 执行 `bash ~/.cursor/extensions/agent-self-learning/scripts/list_learnings.sh`
-- 会话结束时: 扫描学习信号并通过 `bash ~/.cursor/extensions/agent-self-learning/scripts/add_learning.sh` 记录
-- 自动检测用户消息中的纠正、偏好、成功模式
-```
-
-### 示例: Cline (`.clinerules/self-learning.md`)
-
-```markdown
-## Self-Learning
-
-- 会话开始时: 执行 `bash ~/.cline/skills/agent-self-learning/scripts/list_learnings.sh`
-- 会话结束时: 扫描学习信号并通过 `bash ~/.cline/skills/agent-self-learning/scripts/add_learning.sh` 记录
-- 自动检测用户消息中的纠正、偏好、成功模式
 ```
 
 ## 系统要求

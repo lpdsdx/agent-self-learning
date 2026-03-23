@@ -284,7 +284,9 @@ To make the agent use this skill automatically, add instructions to your IDE's s
 | Cline | `.clinerules/*.md` | `~/Documents/Cline/Rules/` |
 | Roo Code | `.roo/rules/*.md` | `~/.roo/rules/` |
 
-### Example: Claude Code (`CLAUDE.md`)
+### Configuration Example (Claude Code `CLAUDE.md`)
+
+Other IDEs follow the same pattern - just replace the script path with your IDE's install path from the table above.
 
 ```markdown
 ## Self-Learning
@@ -296,48 +298,6 @@ To make the agent use this skill automatically, add instructions to your IDE's s
   - "remember", "from now on", "next time" -> remember (high, 0.80)
   - "worked", "solved", "fixed" -> success_pattern (high, 0.80)
   - "prefer", "like to", "tend to" -> preference (high, 0.75)
-```
-
-### Example: Codex CLI (`AGENTS.md`)
-
-```markdown
-## Self-Learning
-
-- On session start: run `bash ~/.codex/skills/agent-self-learning/scripts/list_learnings.sh` to load prior knowledge
-- On session end: scan for learning signals and record via `bash ~/.codex/skills/agent-self-learning/scripts/add_learning.sh`
-- When user corrects you or shares a successful solution, capture it immediately
-```
-
-### Example: Gemini CLI (`GEMINI.md`)
-
-```markdown
-## Self-Learning
-
-- On session start: run `bash ~/.gemini/antigravity/skills/agent-self-learning/scripts/list_learnings.sh` to load prior knowledge
-- On session end: scan for learning signals and record via `bash ~/.gemini/antigravity/skills/agent-self-learning/scripts/add_learning.sh`
-- When user corrects you or shares a successful solution, capture it immediately
-```
-
-### Example: Cursor (`.cursor/rules/self-learning.mdc`)
-
-```yaml
----
-description: AI agent self-learning system
-alwaysApply: true
----
-- On session start: run `bash ~/.cursor/extensions/agent-self-learning/scripts/list_learnings.sh`
-- On session end: scan for learning signals and record via `bash ~/.cursor/extensions/agent-self-learning/scripts/add_learning.sh`
-- Auto-detect corrections, preferences, success patterns from user messages
-```
-
-### Example: Cline (`.clinerules/self-learning.md`)
-
-```markdown
-## Self-Learning
-
-- On session start: run `bash ~/.cline/skills/agent-self-learning/scripts/list_learnings.sh`
-- On session end: scan for learning signals and record via `bash ~/.cline/skills/agent-self-learning/scripts/add_learning.sh`
-- Auto-detect corrections, preferences, success patterns from user messages
 ```
 
 ## Requirements
