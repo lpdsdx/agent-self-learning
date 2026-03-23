@@ -200,7 +200,7 @@ bash scripts/add_learning.sh --type remember --priority critical \
 
 # 2. Deployment info
 bash scripts/add_learning.sh --type remember --priority critical \
-  --content "Server: SSH port 57275, key-only auth, Docker deployed" \
+  --content "Server: SSH port 22, key-only auth, Docker deployed" \
   --tags "deployment,infrastructure"
 
 # 3. What worked
@@ -238,7 +238,7 @@ bash scripts/list_learnings.sh
 
 **Success Pattern** - Docker networking gotcha:
 
-> *"The kiro.rs container kept dropping off the network after restart"*
+> *"The API proxy container kept dropping off the network after restart"*
 
 ```json
 { "type": "success_pattern", "content": "Docker container restart loses network membership - must declare networks in docker-compose.yml explicitly", "priority": "high", "tags": ["docker", "networking"] }

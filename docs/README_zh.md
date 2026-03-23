@@ -182,7 +182,7 @@ bash scripts/add_learning.sh --type remember --priority critical \
 
 # 2. 部署信息
 bash scripts/add_learning.sh --type remember --priority critical \
-  --content "服务器: SSH 端口 57275，仅 Key 认证，Docker 部署" \
+  --content "服务器: SSH 端口 22，仅 Key 认证，Docker 部署" \
   --tags "deployment,infrastructure"
 
 # 3. 有效方案
@@ -220,7 +220,7 @@ bash scripts/list_learnings.sh
 
 **成功模式** - Docker 网络踩坑:
 
-> *"kiro.rs 容器重启后总是掉出网络"*
+> *"API 代理容器重启后总是掉出网络"*
 
 ```json
 { "type": "success_pattern", "content": "Docker 容器重启会丢失网络成员关系，必须在 docker-compose.yml 中显式声明 networks", "priority": "high", "tags": ["docker", "networking"] }
