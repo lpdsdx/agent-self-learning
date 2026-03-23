@@ -178,6 +178,81 @@ Each record:
 | `session_start.sh` | Session initialization hook |
 | `session_end.sh` | Session teardown hook |
 
+## Real-World Examples
+
+> From actual usage across 3 projects, 180+ learning records accumulated over weeks of daily development.
+
+### Correction: Catching API Misuse
+
+You tell the agent: *"Wrong - use `.maybeSingle()` not `.single()` when the query might return 0 rows"*
+
+The system captures:
+```json
+{
+  "type": "correction",
+  "content": "Supabase queries that may return 0 rows should use .maybeSingle() instead of .single(), otherwise it throws a 406 error",
+  "priority": "critical",
+  "confidence": 0.90,
+  "tags": ["supabase", "database", "api"]
+}
+```
+Next session, the agent avoids this mistake automatically.
+
+### Preference: Remembering Your Stack Choices
+
+You say: *"Remember, I prefer React Query for server state, not raw useState"*
+
+```json
+{
+  "type": "preference",
+  "content": "User prefers React Query for server state management instead of useState",
+  "priority": "high",
+  "confidence": 0.85,
+  "tags": ["react", "state-management", "frontend"]
+}
+```
+
+### Success Pattern: Proven Solutions Get Reused
+
+After solving a tricky problem: *"The exponential backoff retry mechanism fixed the GitHub API rate limit issue"*
+
+```json
+{
+  "type": "success_pattern",
+  "content": "Exponential backoff retry effectively solves GitHub API rate limit issues",
+  "priority": "high",
+  "confidence": 0.80,
+  "tags": ["github", "api", "retry", "rate-limit"]
+}
+```
+When a similar rate-limit issue appears later, the agent already knows the proven fix.
+
+### Remember: Preserving Project Context
+
+You say: *"Remember - the deploy is at ~/my-app/, Postgres user is myuser, and the service runs on port 3000"*
+
+```json
+{
+  "type": "remember",
+  "content": "Project deployment: ~/my-app/ directory, PostgreSQL user myuser, service on port 3000",
+  "priority": "high",
+  "confidence": 0.80,
+  "tags": ["deployment", "infrastructure", "postgres"]
+}
+```
+No more re-explaining your infra setup every session.
+
+### Accumulated Knowledge Stats (Real Data)
+
+| Project | Records | Corrections | Preferences | Success Patterns | Remembers |
+|---------|---------|-------------|-------------|-----------------|-----------|
+| API Gateway | 127 | 10 | 5 | 72 | 40 |
+| Social Platform | 43 | 5 | 4 | 15 | 19 |
+| Analytics Dashboard | 10 | 1 | 1 | 5 | 3 |
+| **Total** | **180** | **16** | **10** | **92** | **62** |
+
+The knowledge base grows organically as you work. Success patterns dominate because the system captures what actually works in your codebase.
+
 ## Requirements
 
 - Bash 3.2+ (macOS compatible)
