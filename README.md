@@ -178,71 +178,81 @@ Each record:
 | `session_start.sh` | Session initialization hook |
 | `session_end.sh` | Session teardown hook |
 
-## Real-World Examples
+## Real-World Usage
 
 > From actual usage across 3 projects, 180+ learning records accumulated over weeks of daily development.
 
-### Correction: Catching API Misuse
+### Typical Workflow
 
-You tell the agent: *"Wrong - use `.maybeSingle()` not `.single()` when the query might return 0 rows"*
+The most common usage pattern is **batch recording at the end of a task** - after completing a feature, debugging session, or deployment, you tell the agent:
 
-The system captures:
-```json
-{
-  "type": "correction",
-  "content": "Supabase queries that may return 0 rows should use .maybeSingle() instead of .single(), otherwise it throws a 406 error",
-  "priority": "critical",
-  "confidence": 0.90,
-  "tags": ["supabase", "database", "api"]
-}
+> *"Use agent-self-learning to record all key information, knowledge, experience, methods, and TODOs from this session."*
+
+The agent then extracts and persists multiple learnings at once:
+
+```bash
+# The agent runs multiple add_learning.sh calls automatically:
+
+# 1. Architecture decision
+bash scripts/add_learning.sh --type remember --priority critical \
+  --content "All designs must follow 'independent social system + adapter' pattern, never embed into core" \
+  --tags "architecture,design-principle"
+
+# 2. Deployment info
+bash scripts/add_learning.sh --type remember --priority critical \
+  --content "Server: SSH port 57275, key-only auth, Docker deployed" \
+  --tags "deployment,infrastructure"
+
+# 3. What worked
+bash scripts/add_learning.sh --type success_pattern --priority high \
+  --content "Localizing external CDN resources to public/ directory is the best cost-effective solution for slow loading" \
+  --tags "performance,cdn,optimization"
+
+# 4. Bug fix learned
+bash scripts/add_learning.sh --type correction --priority critical \
+  --content "Vercel env vars piped via echo carry trailing newline causing API failures - use printf '%s' instead" \
+  --tags "vercel,env,debugging"
 ```
-Next session, the agent avoids this mistake automatically.
 
-### Preference: Remembering Your Stack Choices
+### Loading Knowledge at Session Start
 
-You say: *"Remember, I prefer React Query for server state, not raw useState"*
+At the beginning of a new session, load previous learnings to restore context:
 
-```json
-{
-  "type": "preference",
-  "content": "User prefers React Query for server state management instead of useState",
-  "priority": "high",
-  "confidence": 0.85,
-  "tags": ["react", "state-management", "frontend"]
-}
+> *"Use agent-self-learning to load learning records."*
+
+```bash
+bash scripts/list_learnings.sh
+# Output: 127 records loaded, 21 critical, 92 high priority
+# Agent now has full context from previous sessions
 ```
 
-### Success Pattern: Proven Solutions Get Reused
+### Real Examples from Production Use
 
-After solving a tricky problem: *"The exponential backoff retry mechanism fixed the GitHub API rate limit issue"*
+**Correction** - Catching a subtle API bug:
 
-```json
-{
-  "type": "success_pattern",
-  "content": "Exponential backoff retry effectively solves GitHub API rate limit issues",
-  "priority": "high",
-  "confidence": 0.80,
-  "tags": ["github", "api", "retry", "rate-limit"]
-}
-```
-When a similar rate-limit issue appears later, the agent already knows the proven fix.
-
-### Remember: Preserving Project Context
-
-You say: *"Remember - the deploy is at ~/my-app/, Postgres user is myuser, and the service runs on port 3000"*
+> *"Wrong - use `.maybeSingle()` not `.single()` when the query might return 0 rows"*
 
 ```json
-{
-  "type": "remember",
-  "content": "Project deployment: ~/my-app/ directory, PostgreSQL user myuser, service on port 3000",
-  "priority": "high",
-  "confidence": 0.80,
-  "tags": ["deployment", "infrastructure", "postgres"]
-}
+{ "type": "correction", "content": "Supabase queries that may return 0 rows should use .maybeSingle() instead of .single(), otherwise it throws a 406 error", "priority": "critical", "tags": ["supabase", "database"] }
 ```
-No more re-explaining your infra setup every session.
 
-### Accumulated Knowledge Stats (Real Data)
+**Success Pattern** - Docker networking gotcha:
+
+> *"The kiro.rs container kept dropping off the network after restart"*
+
+```json
+{ "type": "success_pattern", "content": "Docker container restart loses network membership - must declare networks in docker-compose.yml explicitly", "priority": "high", "tags": ["docker", "networking"] }
+```
+
+**Remember** - Preserving project routing knowledge:
+
+> *"Record the channel routing strategy: higher number = higher priority, equal priority uses weighted random, failover to lower priority on failure"*
+
+```json
+{ "type": "remember", "content": "Channel routing: priority (higher number = higher), weight (random when equal priority, split evenly when all 0), auto-failover to lower priority on failure", "priority": "high", "tags": ["routing", "architecture"] }
+```
+
+### Accumulated Knowledge (Real Data)
 
 | Project | Records | Corrections | Preferences | Success Patterns | Remembers |
 |---------|---------|-------------|-------------|-----------------|-----------|
@@ -251,7 +261,12 @@ No more re-explaining your infra setup every session.
 | Analytics Dashboard | 10 | 1 | 1 | 5 | 3 |
 | **Total** | **180** | **16** | **10** | **92** | **62** |
 
-The knowledge base grows organically as you work. Success patterns dominate because the system captures what actually works in your codebase.
+Success patterns dominate because the system naturally captures what actually works in your codebase.
+
+### Current Limitations
+
+- **Keyword auto-trigger**: The ideal mode is automatic detection of learning signals from conversation. In practice, most users still trigger recording manually (e.g., "record this session's learnings"). Improving auto-detection accuracy is an ongoing effort.
+- **IDE hooks**: Session lifecycle hooks (SessionStart/Stop) depend on each IDE's extension API. Not all IDEs support hooks equally - Claude Code hooks may not fire reliably in all configurations. Manual invocation remains the reliable fallback.
 
 ## Requirements
 

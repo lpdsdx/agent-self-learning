@@ -1,10 +1,31 @@
-# Agent Self-Learning (中文文档)
+<p align="center">
+  <img src="https://img.shields.io/badge/AI_Agent-Self_Learning-blueviolet?style=for-the-badge&logo=brain&logoColor=white" alt="Agent Self-Learning" />
+</p>
 
-[English](../README.md) | 中文
+<h1 align="center">Agent Self-Learning</h1>
 
-轻量级、跨 IDE 的 AI 编程智能体自学习系统。自动从用户交互中捕获纠正、偏好、成功模式和显式记忆，构建跨会话持久化的知识库。
+<p align="center">
+  <strong>轻量级、跨 IDE 的 AI 编程智能体自学习系统。</strong><br/>
+  自动从用户交互中捕获纠正、偏好、成功模式，<br/>
+  构建跨会话持久化的知识库。
+</p>
 
-**支持的 AI IDE**: Claude Code, Codex CLI, Gemini CLI, Cursor, Windsurf, Cline (Roo Code)
+<p align="center">
+  <a href="../LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License MIT" /></a>
+  <img src="https://img.shields.io/badge/Bash-3.2%2B-4EAA25?logo=gnubash&logoColor=white" alt="Bash 3.2+" />
+  <img src="https://img.shields.io/badge/macOS-compatible-000000?logo=apple&logoColor=white" alt="macOS compatible" />
+  <img src="https://img.shields.io/badge/Linux-compatible-FCC624?logo=linux&logoColor=black" alt="Linux compatible" />
+</p>
+
+<p align="center">
+  <a href="../README.md">English</a> | <b>中文</b>
+</p>
+
+<p align="center">
+  <code>Claude Code</code> · <code>Codex CLI</code> · <code>Gemini CLI</code> · <code>Cursor</code> · <code>Windsurf</code> · <code>Cline / Roo Code</code>
+</p>
+
+---
 
 ## 为什么需要
 
@@ -139,69 +160,79 @@ bash scripts/rebuild_index.sh
 | `session_start.sh` | 会话初始化钩子 |
 | `session_end.sh` | 会话结束钩子 |
 
-## 真实使用案例
+## 真实使用场景
 
 > 以下数据来自 3 个项目的实际使用，数周日常开发中累积了 180+ 条学习记录。
 
-### 纠正: 捕获 API 误用
+### 典型工作流
 
-你对智能体说: *"不对，查询可能返回 0 行时应该用 `.maybeSingle()` 而不是 `.single()`"*
+最常见的使用模式是**任务结束后批量记录** - 完成一个功能、调试会话或部署后，你对智能体说:
 
-系统自动捕获:
-```json
-{
-  "type": "correction",
-  "content": "Supabase 查询可能返回 0 行时应使用 .maybeSingle() 而不是 .single()，否则会抛出 406 错误",
-  "priority": "critical",
-  "confidence": 0.90,
-  "tags": ["supabase", "database", "api"]
-}
+> *"用 agent-self-learning skill 记录下上述所有过程关键信息、知识、经验、方法、待办。"*
+
+智能体会一次性提取并持久化多条学习记录:
+
+```bash
+# 智能体自动执行多次 add_learning.sh:
+
+# 1. 架构决策
+bash scripts/add_learning.sh --type remember --priority critical \
+  --content "所有设计必须遵循'独立社会系统 + adapter'模式，不能内嵌到核心" \
+  --tags "architecture,design-principle"
+
+# 2. 部署信息
+bash scripts/add_learning.sh --type remember --priority critical \
+  --content "服务器: SSH 端口 57275，仅 Key 认证，Docker 部署" \
+  --tags "deployment,infrastructure"
+
+# 3. 有效方案
+bash scripts/add_learning.sh --type success_pattern --priority high \
+  --content "将外部 CDN 资源本地化到 public/ 目录是解决加载慢的最高性价比方案" \
+  --tags "performance,cdn,optimization"
+
+# 4. 踩坑经验
+bash scripts/add_learning.sh --type correction --priority critical \
+  --content "Vercel 环境变量通过 echo 管道传入会带尾部换行导致 API 调用失败，必须用 printf '%s' 代替" \
+  --tags "vercel,env,debugging"
 ```
-下次会话，智能体自动避免这个错误。
 
-### 偏好: 记住你的技术栈选择
+### 会话开始时加载知识
 
-你说: *"记住，我喜欢用 React Query 管理服务端状态，不要用 useState"*
+新会话开始时，加载之前的学习记录恢复上下文:
 
-```json
-{
-  "type": "preference",
-  "content": "用户偏好使用 React Query 管理服务端状态，而不是 useState",
-  "priority": "high",
-  "confidence": 0.85,
-  "tags": ["react", "state-management", "frontend"]
-}
+> *"用 agent-self-learning skill 加载学习记录。"*
+
+```bash
+bash scripts/list_learnings.sh
+# 输出: 127 条记录已加载，21 条 critical，92 条 high
+# 智能体现在拥有之前所有会话的完整上下文
 ```
 
-### 成功模式: 验证有效的方案被复用
+### 来自生产环境的真实案例
 
-解决了一个棘手问题后: *"指数退避重试机制成功解决了 GitHub API 的 rate limit 问题"*
+**纠正** - 捕获微妙的 API bug:
 
-```json
-{
-  "type": "success_pattern",
-  "content": "指数退避重试机制有效解决 GitHub API rate limit 问题",
-  "priority": "high",
-  "confidence": 0.80,
-  "tags": ["github", "api", "retry", "rate-limit"]
-}
-```
-后续遇到类似的限流问题时，智能体已经知道验证过的解决方案。
-
-### 记忆: 保留项目上下文
-
-你说: *"记住，部署目录在 ~/my-app/，Postgres 用户是 myuser，服务跑在 3000 端口"*
+> *"不对，查询可能返回 0 行时应该用 `.maybeSingle()` 而不是 `.single()`"*
 
 ```json
-{
-  "type": "remember",
-  "content": "项目部署: ~/my-app/ 目录，PostgreSQL 用户 myuser，服务端口 3000",
-  "priority": "high",
-  "confidence": 0.80,
-  "tags": ["deployment", "infrastructure", "postgres"]
-}
+{ "type": "correction", "content": "Supabase 查询可能返回 0 行时应使用 .maybeSingle() 而不是 .single()，否则会抛出 406 错误", "priority": "critical", "tags": ["supabase", "database"] }
 ```
-再也不用每次会话重新解释你的基础设施配置。
+
+**成功模式** - Docker 网络踩坑:
+
+> *"kiro.rs 容器重启后总是掉出网络"*
+
+```json
+{ "type": "success_pattern", "content": "Docker 容器重启会丢失网络成员关系，必须在 docker-compose.yml 中显式声明 networks", "priority": "high", "tags": ["docker", "networking"] }
+```
+
+**记忆** - 保留项目路由知识:
+
+> *"记录下渠道路由策略: 数字越大优先级越高，优先级相同按权重随机，失败自动降级到低优先级"*
+
+```json
+{ "type": "remember", "content": "渠道路由: 优先级(数字越大越优先)，权重(优先级相同时加权随机，都为0则均分)，故障自动降级到低优先级渠道", "priority": "high", "tags": ["routing", "architecture"] }
+```
 
 ### 累积知识统计（真实数据）
 
@@ -212,7 +243,12 @@ bash scripts/rebuild_index.sh
 | 数据分析面板 | 10 | 1 | 1 | 5 | 3 |
 | **合计** | **180** | **16** | **10** | **92** | **62** |
 
-知识库随着你的日常开发自然增长。成功模式占比最高，因为系统会持续捕获在你的代码库中真正有效的方案。
+成功模式占比最高，因为系统会持续捕获在你的代码库中真正有效的方案。
+
+### 当前局限性
+
+- **关键词自动触发**: 理想模式是从对话中自动检测学习信号。实际使用中，大多数用户仍然手动触发记录（如"记录下这次会话的学习内容"）。提升自动检测准确率是持续改进方向。
+- **IDE 钩子**: 会话生命周期钩子（SessionStart/Stop）依赖各 IDE 的扩展 API。并非所有 IDE 都同等支持钩子 - Claude Code 的钩子在某些配置下可能无法可靠触发。手动调用仍然是可靠的兜底方案。
 
 ## 系统要求
 
