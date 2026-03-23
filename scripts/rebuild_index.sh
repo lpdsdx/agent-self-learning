@@ -50,7 +50,7 @@ for file in "$LEARNING_DIR/learnings"/*.json; do
     jq -r '.priority' "$file" >> "$TEMP_PRIORITIES"
     
     # 添加到临时文件（用 --arg 安全传递文件名）
-    jq -c --arg fname "$(basename "$file")" '{id, type, priority, confidence, content, createdAt, file: $fname}' "$file" >> "$TEMP_LEARNINGS"
+    jq -c --arg fname "$(basename "$file")" '{id, type, priority, confidence, content, tags, createdAt, file: $fname}' "$file" >> "$TEMP_LEARNINGS"
   fi
 done
 
