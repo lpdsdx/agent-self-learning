@@ -250,6 +250,78 @@ bash scripts/list_learnings.sh
 - **关键词自动触发**: 理想模式是从对话中自动检测学习信号。实际使用中，大多数用户仍然手动触发记录（如"记录下这次会话的学习内容"）。提升自动检测准确率是持续改进方向。
 - **IDE 钩子**: 会话生命周期钩子（SessionStart/Stop）依赖各 IDE 的扩展 API。并非所有 IDE 都同等支持钩子 - Claude Code 的钩子在某些配置下可能无法可靠触发。手动调用仍然是可靠的兜底方案。
 
+## IDE 集成配置
+
+在你的 IDE 系统提示词文件中添加以下指令，让智能体自动使用该 skill。
+
+### 各 IDE 指令文件对照
+
+| IDE / CLI | 项目级文件 | 用户级文件 |
+|-----------|-----------|-----------|
+| Claude Code | `CLAUDE.md` | `~/.claude/CLAUDE.md` |
+| Codex CLI | `AGENTS.md` | `~/.codex/AGENTS.md` |
+| Gemini CLI | `GEMINI.md` | `~/.gemini/GEMINI.md` |
+| Cursor | `.cursor/rules/*.mdc` | 设置 > Rules for AI |
+| Windsurf | `.windsurf/rules/*.md` | 设置 > Global Rules |
+| Cline | `.clinerules/*.md` | `~/Documents/Cline/Rules/` |
+| Roo Code | `.roo/rules/*.md` | `~/.roo/rules/` |
+
+### 示例: Claude Code (`CLAUDE.md`)
+
+```markdown
+## Self-Learning
+
+- 会话开始时: 执行 `bash ~/.claude/skills/agent-self-learning/scripts/list_learnings.sh` 加载历史知识
+- 会话结束时: 扫描对话中的学习信号（纠正、偏好、成功模式、需要记住的内容），通过 `bash ~/.claude/skills/agent-self-learning/scripts/add_learning.sh` 记录
+- 自动检测用户消息中的学习信号:
+  - "不对"、"错了"、"应该是" -> correction (critical, 0.90)
+  - "记住"、"以后"、"下次" -> remember (high, 0.80)
+  - "成功"、"有效"、"解决了" -> success_pattern (high, 0.80)
+  - "喜欢"、"习惯"、"倾向" -> preference (high, 0.75)
+```
+
+### 示例: Codex CLI (`AGENTS.md`)
+
+```markdown
+## Self-Learning
+
+- 会话开始时: 执行 `bash ~/.codex/skills/agent-self-learning/scripts/list_learnings.sh` 加载历史知识
+- 会话结束时: 扫描学习信号并通过 `bash ~/.codex/skills/agent-self-learning/scripts/add_learning.sh` 记录
+- 当用户纠正你或分享成功方案时，立即捕获
+```
+
+### 示例: Gemini CLI (`GEMINI.md`)
+
+```markdown
+## Self-Learning
+
+- 会话开始时: 执行 `bash ~/.gemini/antigravity/skills/agent-self-learning/scripts/list_learnings.sh` 加载历史知识
+- 会话结束时: 扫描学习信号并通过 `bash ~/.gemini/antigravity/skills/agent-self-learning/scripts/add_learning.sh` 记录
+- 当用户纠正你或分享成功方案时，立即捕获
+```
+
+### 示例: Cursor (`.cursor/rules/self-learning.mdc`)
+
+```yaml
+---
+description: AI agent self-learning system
+alwaysApply: true
+---
+- 会话开始时: 执行 `bash ~/.cursor/extensions/agent-self-learning/scripts/list_learnings.sh`
+- 会话结束时: 扫描学习信号并通过 `bash ~/.cursor/extensions/agent-self-learning/scripts/add_learning.sh` 记录
+- 自动检测用户消息中的纠正、偏好、成功模式
+```
+
+### 示例: Cline (`.clinerules/self-learning.md`)
+
+```markdown
+## Self-Learning
+
+- 会话开始时: 执行 `bash ~/.cline/skills/agent-self-learning/scripts/list_learnings.sh`
+- 会话结束时: 扫描学习信号并通过 `bash ~/.cline/skills/agent-self-learning/scripts/add_learning.sh` 记录
+- 自动检测用户消息中的纠正、偏好、成功模式
+```
+
 ## 系统要求
 
 - Bash 3.2+（兼容 macOS）

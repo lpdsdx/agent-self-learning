@@ -268,6 +268,78 @@ Success patterns dominate because the system naturally captures what actually wo
 - **Keyword auto-trigger**: The ideal mode is automatic detection of learning signals from conversation. In practice, most users still trigger recording manually (e.g., "record this session's learnings"). Improving auto-detection accuracy is an ongoing effort.
 - **IDE hooks**: Session lifecycle hooks (SessionStart/Stop) depend on each IDE's extension API. Not all IDEs support hooks equally - Claude Code hooks may not fire reliably in all configurations. Manual invocation remains the reliable fallback.
 
+## IDE Integration
+
+To make the agent use this skill automatically, add instructions to your IDE's system prompt file.
+
+### Instruction File Reference
+
+| IDE / CLI | Project-Level File | User-Level File |
+|-----------|-------------------|-----------------|
+| Claude Code | `CLAUDE.md` | `~/.claude/CLAUDE.md` |
+| Codex CLI | `AGENTS.md` | `~/.codex/AGENTS.md` |
+| Gemini CLI | `GEMINI.md` | `~/.gemini/GEMINI.md` |
+| Cursor | `.cursor/rules/*.mdc` | Settings > Rules for AI |
+| Windsurf | `.windsurf/rules/*.md` | Settings > Global Rules |
+| Cline | `.clinerules/*.md` | `~/Documents/Cline/Rules/` |
+| Roo Code | `.roo/rules/*.md` | `~/.roo/rules/` |
+
+### Example: Claude Code (`CLAUDE.md`)
+
+```markdown
+## Self-Learning
+
+- On session start: run `bash ~/.claude/skills/agent-self-learning/scripts/list_learnings.sh` to load prior knowledge
+- On session end: scan the conversation for learning signals (corrections, preferences, success patterns, things to remember) and record them via `bash ~/.claude/skills/agent-self-learning/scripts/add_learning.sh`
+- Auto-detect learning signals from user messages:
+  - "wrong", "should be", "actually" -> correction (critical, 0.90)
+  - "remember", "from now on", "next time" -> remember (high, 0.80)
+  - "worked", "solved", "fixed" -> success_pattern (high, 0.80)
+  - "prefer", "like to", "tend to" -> preference (high, 0.75)
+```
+
+### Example: Codex CLI (`AGENTS.md`)
+
+```markdown
+## Self-Learning
+
+- On session start: run `bash ~/.codex/skills/agent-self-learning/scripts/list_learnings.sh` to load prior knowledge
+- On session end: scan for learning signals and record via `bash ~/.codex/skills/agent-self-learning/scripts/add_learning.sh`
+- When user corrects you or shares a successful solution, capture it immediately
+```
+
+### Example: Gemini CLI (`GEMINI.md`)
+
+```markdown
+## Self-Learning
+
+- On session start: run `bash ~/.gemini/antigravity/skills/agent-self-learning/scripts/list_learnings.sh` to load prior knowledge
+- On session end: scan for learning signals and record via `bash ~/.gemini/antigravity/skills/agent-self-learning/scripts/add_learning.sh`
+- When user corrects you or shares a successful solution, capture it immediately
+```
+
+### Example: Cursor (`.cursor/rules/self-learning.mdc`)
+
+```yaml
+---
+description: AI agent self-learning system
+alwaysApply: true
+---
+- On session start: run `bash ~/.cursor/extensions/agent-self-learning/scripts/list_learnings.sh`
+- On session end: scan for learning signals and record via `bash ~/.cursor/extensions/agent-self-learning/scripts/add_learning.sh`
+- Auto-detect corrections, preferences, success patterns from user messages
+```
+
+### Example: Cline (`.clinerules/self-learning.md`)
+
+```markdown
+## Self-Learning
+
+- On session start: run `bash ~/.cline/skills/agent-self-learning/scripts/list_learnings.sh`
+- On session end: scan for learning signals and record via `bash ~/.cline/skills/agent-self-learning/scripts/add_learning.sh`
+- Auto-detect corrections, preferences, success patterns from user messages
+```
+
 ## Requirements
 
 - Bash 3.2+ (macOS compatible)
