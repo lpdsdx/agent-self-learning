@@ -15,6 +15,7 @@
   <img src="https://img.shields.io/badge/Bash-3.2%2B-4EAA25?logo=gnubash&logoColor=white" alt="Bash 3.2+" />
   <img src="https://img.shields.io/badge/macOS-compatible-000000?logo=apple&logoColor=white" alt="macOS compatible" />
   <img src="https://img.shields.io/badge/Linux-compatible-FCC624?logo=linux&logoColor=black" alt="Linux compatible" />
+  <img src="https://img.shields.io/badge/Windows-Git_Bash%20%7C%20WSL-0078D6?logo=windows&logoColor=white" alt="Windows compatible" />
 </p>
 
 <p align="center">
@@ -284,9 +285,9 @@ bash scripts/list_learnings.sh
 
 ## 系统要求
 
-- Bash 3.2+（兼容 macOS）
+- Bash 3.2+（macOS / Linux / Windows Git Bash 或 WSL）
 - `jq`（JSON 处理器）
-- `bc`（置信度计算）
+- `python3`（可选，部分平台日期解析回退用）
 
 ## 致谢
 

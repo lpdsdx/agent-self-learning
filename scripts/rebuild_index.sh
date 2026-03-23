@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# 重建学习索引（兼容 macOS bash 3.x）
+# 重建学习索引（兼容 macOS / Linux / Windows Git Bash）
+
+# 依赖检查
+if ! command -v jq &>/dev/null; then
+  echo "错误: 需要 jq，请先安装" >&2
+  exit 1
+fi
 # 环境检测
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 if [[ -f "$SCRIPT_DIR/detect_env.sh" ]]; then
@@ -43,8 +49,8 @@ for file in "$LEARNING_DIR/learnings"/*.json; do
     jq -r '.type' "$file" >> "$TEMP_TYPES"
     jq -r '.priority' "$file" >> "$TEMP_PRIORITIES"
     
-    # 添加到临时文件
-    jq -c "{id, type, priority, confidence, content, createdAt, file: \"$(basename "$file")\"}" "$file" >> "$TEMP_LEARNINGS"
+    # 添加到临时文件（用 --arg 安全传递文件名）
+    jq -c --arg fname "$(basename "$file")" '{id, type, priority, confidence, content, createdAt, file: $fname}' "$file" >> "$TEMP_LEARNINGS"
   fi
 done
 

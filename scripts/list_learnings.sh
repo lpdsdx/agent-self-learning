@@ -1,7 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# 列出学习记录（多 IDE 兼容）
+# 列出学习记录（多 IDE 兼容，跨平台）
+
+# 依赖检查
+if ! command -v jq &>/dev/null; then
+  echo "错误: 需要 jq，请先安装" >&2
+  exit 1
+fi
+
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 if [[ -f "$SCRIPT_DIR/detect_env.sh" ]]; then
   LEARNING_DIR="${LEARNING_DIR:-$(bash "$SCRIPT_DIR/detect_env.sh" learning-dir)}"
@@ -33,25 +40,25 @@ fi
 # 读取索引
 INDEX=$(cat "$LEARNING_DIR/index.json")
 
-# 过滤
+# 过滤（使用 --arg 防止注入）
 FILTERED="$INDEX"
 if [[ -n "$TYPE" ]]; then
-  FILTERED=$(echo "$FILTERED" | jq ".learnings | map(select(.type == \"$TYPE\"))")
+  FILTERED=$(echo "$FILTERED" | jq --arg t "$TYPE" '.learnings | map(select(.type == $t))')
 else
   FILTERED=$(echo "$FILTERED" | jq '.learnings')
 fi
 
 if [[ -n "$PRIORITY" ]]; then
-  FILTERED=$(echo "$FILTERED" | jq "map(select(.priority == \"$PRIORITY\"))")
+  FILTERED=$(echo "$FILTERED" | jq --arg p "$PRIORITY" 'map(select(.priority == $p))')
 fi
 
 if [[ -n "$TAGS" ]]; then
-  FILTERED=$(echo "$FILTERED" | jq "map(select(.tags | index(\"$TAGS\")))")
+  FILTERED=$(echo "$FILTERED" | jq --arg tg "$TAGS" 'map(select(.tags | index($tg)))')
 fi
 
 # 限制数量
 if [[ -n "$LIMIT" ]]; then
-  FILTERED=$(echo "$FILTERED" | jq ".[:$LIMIT]")
+  FILTERED=$(echo "$FILTERED" | jq --argjson n "$LIMIT" '.[:$n]')
 fi
 
 # 输出：从实际文件读取 content 和 confidence

@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# AI 智能体自学习系统 - 添加学习记录（多 IDE 兼容）
+# AI 智能体自学习系统 - 添加学习记录（多 IDE 兼容，跨平台）
 # 用法: add_learning.sh --type <type> --content <content> [--priority <priority>] [--tags <tags>]
+
+# 依赖检查
+if ! command -v jq &>/dev/null; then
+  echo "错误: 需要 jq，请先安装" >&2
+  exit 1
+fi
 
 # 环境检测
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -101,10 +107,9 @@ while [[ -f "$LEARNING_DIR/learnings/${DATE_PREFIX}_$(printf "%03d" $COUNTER).js
 done
 FILENAME="${DATE_PREFIX}_$(printf "%03d" $COUNTER).json"
 
-# 转换标签为JSON数组
+# 转换标签为JSON数组（用 jq 安全处理特殊字符）
 if [[ -n "$TAGS" ]]; then
-  TAG_ARRAY=$(echo "$TAGS" | sed 's/,/","/g' | sed 's/^/"/' | sed 's/$/"/')
-  TAG_JSON="[$TAG_ARRAY]"
+  TAG_JSON=$(echo "$TAGS" | jq -R 'split(",")')
 else
   TAG_JSON="[]"
 fi

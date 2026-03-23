@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# 冲突检测（简化版，兼容 macOS）
+# 冲突检测（跨平台: macOS / Linux / Windows Git Bash）
+
+# 依赖检查
+if ! command -v jq &>/dev/null; then
+  echo "错误: 需要 jq，请先安装" >&2
+  exit 1
+fi
 # 环境检测
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 if [[ -f "$SCRIPT_DIR/detect_env.sh" ]]; then

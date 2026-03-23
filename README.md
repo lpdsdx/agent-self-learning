@@ -15,6 +15,7 @@
   <img src="https://img.shields.io/badge/Bash-3.2%2B-4EAA25?logo=gnubash&logoColor=white" alt="Bash 3.2+" />
   <img src="https://img.shields.io/badge/macOS-compatible-000000?logo=apple&logoColor=white" alt="macOS compatible" />
   <img src="https://img.shields.io/badge/Linux-compatible-FCC624?logo=linux&logoColor=black" alt="Linux compatible" />
+  <img src="https://img.shields.io/badge/Windows-Git_Bash%20%7C%20WSL-0078D6?logo=windows&logoColor=white" alt="Windows compatible" />
 </p>
 
 <p align="center">
@@ -302,9 +303,9 @@ Other IDEs follow the same pattern - just replace the script path with your IDE'
 
 ## Requirements
 
-- Bash 3.2+ (macOS compatible)
+- Bash 3.2+ (macOS / Linux / Windows via Git Bash or WSL)
 - `jq` (JSON processor)
-- `bc` (for confidence calculations)
+- `python3` (optional, fallback for date parsing on some platforms)
 
 ## Credits
 
