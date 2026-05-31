@@ -95,6 +95,9 @@ bash scripts/list_learnings.sh --tags "api"
 # Search by keyword
 bash scripts/search_learnings.sh "API timeout"
 
+# Mark a record as used (usageCount +1, refresh lastVerified)
+bash scripts/update_usage.sh --id "learning_1708502400_a1b2c3"
+
 # Confidence decay (unused > 30 days)
 bash scripts/decay_confidence.sh 30
 
@@ -171,6 +174,7 @@ Each record:
 | `add_learning.sh` | Add a new learning record |
 | `list_learnings.sh` | List/filter learning records |
 | `search_learnings.sh` | Full-text keyword search |
+| `update_usage.sh` | Increment a record's usage count and refresh its verification time |
 | `decay_confidence.sh` | Apply confidence decay to stale records |
 | `detect_conflicts.sh` | Find conflicting knowledge entries |
 | `rebuild_index.sh` | Rebuild the index from raw records |
