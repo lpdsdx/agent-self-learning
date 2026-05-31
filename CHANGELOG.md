@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-05-31
+
 ### Added
 - `update_usage.sh` — increment a record's `usageCount` and refresh its `lastVerified` timestamp when a learning is actually applied. Closes the gap where the feature was documented but the script was missing.
 - `CONTRIBUTING.md` with development setup, coding conventions, and a PR checklist.
@@ -27,5 +29,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for Claude Code, Codex CLI, Gemini CLI, Cursor, Windsurf, and Cline / Roo Code.
 - English and Chinese documentation.
 
-[Unreleased]: https://github.com/lpdsdx/agent-self-learning/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/lpdsdx/agent-self-learning/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/lpdsdx/agent-self-learning/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/lpdsdx/agent-self-learning/releases/tag/v1.0.0
