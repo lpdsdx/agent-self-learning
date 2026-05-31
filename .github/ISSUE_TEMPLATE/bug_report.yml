@@ -1,0 +1,43 @@
+name: Bug report
+description: Report a problem with a script or the learning workflow
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the bug, including the exact command you ran.
+      placeholder: |
+        I ran `bash scripts/update_usage.sh --id ...` and got ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: input
+    id: ide
+    attributes:
+      label: AI IDE / CLI
+      description: Which agent were you using?
+      placeholder: Claude Code / Codex CLI / Gemini CLI / Cursor / Windsurf / Cline
+    validations:
+      required: false
+  - type: input
+    id: os
+    attributes:
+      label: OS and shell
+      description: Output of `uname -a` and `bash --version` (first line).
+      placeholder: macOS 14.4 / GNU bash 5.2
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant output
+      description: Paste any error output. This is automatically formatted as code.
+      render: shell
+    validations:
+      required: false
